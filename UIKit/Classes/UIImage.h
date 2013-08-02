@@ -28,6 +28,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIGeometry.h>
 
 typedef enum {
     UIImageOrientationUp,
@@ -58,6 +59,7 @@ typedef enum {
 - (id)initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation;
 
 - (UIImage *)stretchableImageWithLeftCapWidth:(NSInteger)leftCapWidth topCapHeight:(NSInteger)topCapHeight;
+- (UIImage *)resizableImageWithCapInsets:(UIEdgeInsets)capInsets;
 
 // the draw methods will all check the scale of the current context and attempt to use the best representation it can
 - (void)drawAtPoint:(CGPoint)point blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha;

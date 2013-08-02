@@ -77,6 +77,11 @@ NSString *NSStringFromUIEdgeInsets(UIEdgeInsets insets);
 
 NSString *NSStringFromUIOffset(UIOffset offset);
 
+CGAffineTransform CGAffineTransformFromString(NSString *string);
+CGPoint CGPointFromString(NSString *string);
+CGSize CGSizeFromString(NSString *string);
+CGRect CGRectFromString(NSString *string);
+
 @interface NSValue (NSValueUIGeometryExtensions)
 + (NSValue *)valueWithCGPoint:(CGPoint)point;
 + (NSValue *)valueWithCGRect:(CGRect)rect;

@@ -41,6 +41,9 @@
 #import "UITabBarController.h"
 
 @implementation UIViewController
+{
+    NSMutableArray *m_childViewControllers;
+}
 @synthesize view=_view, wantsFullScreenLayout=_wantsFullScreenLayout, title=_title, contentSizeForViewInPopover=_contentSizeForViewInPopover;
 @synthesize modalInPopover=_modalInPopover, toolbarItems=_toolbarItems, modalPresentationStyle=_modalPresentationStyle, editing=_editing;
 @synthesize modalViewController=_modalViewController, parentViewController=_parentViewController;
@@ -297,5 +300,53 @@
 {
     return [NSString stringWithFormat:@"<%@: %p; title = %@; view = %@>", [self className], self, self.title, self.view];
 }
+
+#pragma mark -
+- (NSMutableArray *)m_ChildViewControllers
+{
+    if (!m_childViewControllers) {
+        m_childViewControllers = [NSMutableArray array];
+    }
+    
+    return m_childViewControllers;
+}
+
+- (NSArray *)childViewControllers
+{
+    return [self m_ChildViewControllers];
+}
+
+- (void)addChildViewController:(UIViewController *)childController
+{
+    [[self m_ChildViewControllers] addObject:childController];
+}
+
+- (void)removeFromParentViewController
+{
+    
+}
+
+- (void)willMoveToParentViewController:(UIViewController *)parent
+{
+    
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent
+{
+    
+}
+
+- (void)presentViewController:(UIViewController *)viewControllerToPresent animated: (BOOL)flag completion:(void (^)(void))completion
+{
+    [self presentModalViewController:viewControllerToPresent animated:flag];
+}
+
+// The completion handler, if provided, will be invoked after the dismissed controller's viewDidDisappear: callback is invoked.
+- (void)dismissViewControllerAnimated: (BOOL)flag completion: (void (^)(void))completion
+{
+    [self dismissModalViewControllerAnimated:flag];
+}
+
+
 
 @end

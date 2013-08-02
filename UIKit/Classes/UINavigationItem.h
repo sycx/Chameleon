@@ -53,6 +53,8 @@
 @property (nonatomic, retain) UIBarButtonItem *backBarButtonItem;
 @property (nonatomic, retain) UIBarButtonItem *leftBarButtonItem;
 @property (nonatomic, retain) UIBarButtonItem *rightBarButtonItem;
+@property (nonatomic, retain) NSArray *leftBarButtonItems;
+@property (nonatomic, retain) NSArray *rightBarButtonItems;
 @property (nonatomic, retain) UIView *titleView;
 @property (nonatomic, assign) BOOL hidesBackButton;
 

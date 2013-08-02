@@ -128,4 +128,14 @@ typedef enum {
 @property (nonatomic, retain) UITabBarItem *tabBarItem;
 @property (nonatomic, readonly, retain) UITabBarController *tabBarController;
 
+@property(nonatomic,readonly) NSArray *childViewControllers;
+- (void)addChildViewController:(UIViewController *)childController;
+- (void)removeFromParentViewController;
+- (void)willMoveToParentViewController:(UIViewController *)parent;
+- (void)didMoveToParentViewController:(UIViewController *)parent;
+
+- (void)presentViewController:(UIViewController *)viewControllerToPresent animated: (BOOL)flag completion:(void (^)(void))completion;
+// The completion handler, if provided, will be invoked after the dismissed controller's viewDidDisappear: callback is invoked.
+- (void)dismissViewControllerAnimated: (BOOL)flag completion: (void (^)(void))completion;
+
 @end

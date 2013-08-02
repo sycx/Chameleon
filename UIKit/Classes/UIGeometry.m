@@ -62,6 +62,37 @@ NSString *NSStringFromUIOffset(UIOffset offset)
     return [NSString stringWithFormat:@"{%g, %g}", offset.horizontal, offset.vertical];
 }
 
+CGAffineTransform CGAffineTransformFromString(NSString *string)
+{
+    NSString *trim = [string substringWithRange:NSMakeRange(1, string.length - 2)];
+    NSArray *components = [trim componentsSeparatedByString:@","];
+    if (components.count == 6) {
+        CGAffineTransform t = CGAffineTransformMake([components[0] floatValue],
+                                                    [components[1] floatValue],
+                                                    [components[2] floatValue],
+                                                    [components[3] floatValue],
+                                                    [components[4] floatValue],
+                                                    [components[5] floatValue]);
+        return t;
+    }
+    return CGAffineTransformIdentity;
+}
+
+CGPoint CGPointFromString(NSString *string)
+{
+    return NSPointToCGPoint(NSPointFromString(string));
+}
+
+CGSize CGSizeFromString(NSString *string)
+{
+    return NSSizeToCGSize(NSSizeFromString(string));
+}
+
+CGRect CGRectFromString(NSString *string)
+{
+    return NSRectToCGRect(NSRectFromString(string));
+}
+
 @implementation NSValue (NSValueUIGeometryExtensions)
 + (NSValue *)valueWithCGPoint:(CGPoint)point
 {

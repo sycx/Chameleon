@@ -127,6 +127,12 @@
     }
 }
 
+- (UIImage *)resizableImageWithCapInsets:(UIEdgeInsets)capInsets // create a resizable version of this image. the interior is tiled when drawn.
+{
+    //FIXME: needs correct process cap insets
+    return [self stretchableImageWithLeftCapWidth:capInsets.left topCapHeight:capInsets.top];
+}
+
 - (CGSize)size
 {
     CGSize size = CGSizeZero;
