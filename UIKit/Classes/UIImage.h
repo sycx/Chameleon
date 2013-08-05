@@ -42,6 +42,11 @@ typedef enum {
     UIImageOrientationRightMirrored, // vertical flip
 } UIImageOrientation;
 
+typedef NS_ENUM(NSInteger, UIImageResizingMode) {
+    UIImageResizingModeTile,
+    UIImageResizingModeStretch,
+};
+
 @interface UIImage : NSObject {
 @private
     NSArray *_representations;
@@ -54,12 +59,14 @@ typedef enum {
 + (UIImage *)imageWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation;
 
 - (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)data scale:(CGFloat)scale;
 - (id)initWithContentsOfFile:(NSString *)path;
 - (id)initWithCGImage:(CGImageRef)imageRef;
 - (id)initWithCGImage:(CGImageRef)imageRef scale:(CGFloat)scale orientation:(UIImageOrientation)orientation;
 
 - (UIImage *)stretchableImageWithLeftCapWidth:(NSInteger)leftCapWidth topCapHeight:(NSInteger)topCapHeight;
 - (UIImage *)resizableImageWithCapInsets:(UIEdgeInsets)capInsets;
+- (UIImage *)resizableImageWithCapInsets:(UIEdgeInsets)capInsets resizingMode:(UIImageResizingMode)resizingMode;
 
 // the draw methods will all check the scale of the current context and attempt to use the best representation it can
 - (void)drawAtPoint:(CGPoint)point blendMode:(CGBlendMode)blendMode alpha:(CGFloat)alpha;

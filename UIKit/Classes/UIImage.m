@@ -76,6 +76,12 @@
     return [self _initWithRepresentations:[NSArray arrayWithObjects:[[[UIImageRep alloc] initWithData:data] autorelease], nil]];
 }
 
+- (id)initWithData:(NSData *)data scale:(CGFloat)scale
+{
+    // FIXME: needs correct scale
+    return [self initWithData:data];
+}
+
 - (id)initWithCGImage:(CGImageRef)imageRef
 {
     return [self initWithCGImage:imageRef scale:1 orientation:UIImageOrientationUp];
@@ -131,6 +137,11 @@
 {
     //FIXME: needs correct process cap insets
     return [self stretchableImageWithLeftCapWidth:capInsets.left topCapHeight:capInsets.top];
+}
+
+- (UIImage *)resizableImageWithCapInsets:(UIEdgeInsets)capInsets resizingMode:(UIImageResizingMode)resizingMode
+{
+    return [self resizableImageWithCapInsets:capInsets];
 }
 
 - (CGSize)size
