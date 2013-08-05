@@ -1031,10 +1031,22 @@ static BOOL _animationsEnabled = YES;
 
 + (void)transitionWithView:(UIView *)view duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completio
 {
+    //FIXME: Needs Imp
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (completio) {
+            completio(YES);
+        }
+    });
 }
 
 + (void)transitionFromView:(UIView *)fromView toView:(UIView *)toView duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options completion:(void (^)(BOOL finished))completion
 {
+    //FIXME: Needs Imp
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (completion) {
+            completion(YES);
+        }        
+    });
 }
 
 + (void)beginAnimations:(NSString *)animationID context:(void *)context
