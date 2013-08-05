@@ -134,18 +134,31 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    for (UIViewController *child in self.childViewControllers) {
+        [child viewWillAppear:animated];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    
+    for (UIViewController *child in self.childViewControllers) {
+        [child viewDidAppear:animated];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    for (UIViewController *child in self.childViewControllers) {
+        [child viewWillDisappear:animated];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
+    for (UIViewController *child in self.childViewControllers) {
+        [child viewDidDisappear:animated];
+    }
 }
 
 - (void)viewWillLayoutSubviews
@@ -305,7 +318,7 @@
 - (NSMutableArray *)m_ChildViewControllers
 {
     if (!m_childViewControllers) {
-        m_childViewControllers = [NSMutableArray array];
+        m_childViewControllers = [[NSMutableArray array] retain];
     }
     
     return m_childViewControllers;
@@ -319,21 +332,37 @@
 - (void)addChildViewController:(UIViewController *)childController
 {
     [[self m_ChildViewControllers] addObject:childController];
+    [childController _setParentViewController:self];
+    [childController willMoveToParentViewController:self];
 }
 
 - (void)removeFromParentViewController
 {
-    
+    [[self.parentViewController m_ChildViewControllers] removeObject:self];
+    [self _setParentViewController:nil];
+    [self didMoveToParentViewController:nil];
 }
 
 - (void)willMoveToParentViewController:(UIViewController *)parent
 {
-    
+    if (parent) {
+        if ([parent isViewLoaded]) {
+        }
+    } else {
+        [self viewWillDisappear:NO];
+    }
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent
 {
-    
+    if (parent) {
+        if ([parent isViewLoaded]) {
+            [self viewWillAppear:NO];
+            [self viewDidAppear:NO];
+        }
+    } else {
+        [self viewDidDisappear:NO];
+    }
 }
 
 - (void)presentViewController:(UIViewController *)viewControllerToPresent animated: (BOOL)flag completion:(void (^)(void))completion
