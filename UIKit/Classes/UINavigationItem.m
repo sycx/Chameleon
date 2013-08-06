@@ -36,15 +36,15 @@
 static void * const UINavigationItemContext = "UINavigationItemContext";
 
 @implementation UINavigationItem
-@synthesize title=_title, rightBarButtonItem=_rightBarButtonItem, titleView=_titleView, hidesBackButton=_hidesBackButton;
-@synthesize leftBarButtonItem=_leftBarButtonItem, backBarButtonItem=_backBarButtonItem, prompt=_prompt;
+@synthesize title=_title, rightBarButtonItems=_rightBarButtonItems, titleView=_titleView, hidesBackButton=_hidesBackButton;
+@synthesize leftBarButtonItems=_leftBarButtonItems, backBarButtonItem=_backBarButtonItem, prompt=_prompt;
 
 + (NSSet *)_keyPathsTriggeringUIUpdates
 {
     static NSSet * __keyPaths = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __keyPaths = [[NSSet alloc] initWithObjects:@"title", @"prompt", @"backBarButtonItem", @"leftBarButtonItem", @"rightBarButtonItem", @"titleView", @"hidesBackButton", nil];
+        __keyPaths = [[NSSet alloc] initWithObjects:@"title", @"prompt", @"backBarButtonItem", @"leftBarButtonItem", @"rightBarButtonItem",@"leftBarButtonItems", @"rightBarButtonItems", @"titleView", @"hidesBackButton", nil];
     });
     return __keyPaths;
 }
@@ -63,8 +63,8 @@ static void * const UINavigationItemContext = "UINavigationItemContext";
     [self _setNavigationBar:nil];
     
     [_backBarButtonItem release];
-    [_leftBarButtonItem release];
-    [_rightBarButtonItem release];
+    [_leftBarButtonItems release];
+    [_rightBarButtonItems release];
     [_title release];
     [_titleView release];
     [_prompt release];
@@ -109,14 +109,17 @@ static void * const UINavigationItemContext = "UINavigationItemContext";
     return _navigationBar;
 }
 
+- (UIBarButtonItem *)leftBarButtonItem
+{
+    if (self.leftBarButtonItems.count == 0) {
+        return nil;
+    }
+    return self.leftBarButtonItems[0];
+}
+
 - (void)setLeftBarButtonItem:(UIBarButtonItem *)item animated:(BOOL)animated
 {
-    if (item != _leftBarButtonItem) {
-        [self willChangeValueForKey: @"leftBarButtonItem"];
-        [_leftBarButtonItem release];
-        _leftBarButtonItem = [item retain];
-        [self didChangeValueForKey: @"leftBarButtonItem"];
-    }
+    [self setLeftBarButtonItems:@[item] animated:animated];
 }
 
 - (void)setLeftBarButtonItem:(UIBarButtonItem *)item
@@ -124,19 +127,53 @@ static void * const UINavigationItemContext = "UINavigationItemContext";
     [self setLeftBarButtonItem:item animated:NO];
 }
 
+- (UIBarButtonItem *)rightBarButtonItem
+{
+    if (self.rightBarButtonItems.count == 0) {
+        return nil;
+    }
+    return self.rightBarButtonItems[0];
+}
+
 - (void)setRightBarButtonItem:(UIBarButtonItem *)item animated:(BOOL)animated
 {
-    if (item != _rightBarButtonItem) {
-        [self willChangeValueForKey: @"rightBarButtonItem"];
-        [_rightBarButtonItem release];
-        _rightBarButtonItem = [item retain];
-        [self didChangeValueForKey: @"rightBarButtonItem"];
-    }
+    [self setRightBarButtonItems:@[item] animated:animated];
 }
 
 - (void)setRightBarButtonItem:(UIBarButtonItem *)item
 {
     [self setRightBarButtonItem:item animated:NO];
+}
+
+
+- (void)setRightBarButtonItems:(NSArray *)items animated:(BOOL)animated
+{
+    if (items != _rightBarButtonItems) {
+        [self willChangeValueForKey:@"rightBarButtonItems"];
+        [_rightBarButtonItems release];
+        _rightBarButtonItems = [items retain];
+        [self didChangeValueForKey:@"rightBarButtonItems"];
+    }
+}
+
+- (void)setRightBarButtonItems:(NSArray *)rightBarButtonItems
+{
+    [self setRightBarButtonItems:rightBarButtonItems animated:NO];
+}
+
+- (void)setLeftBarButtonItems:(NSArray *)items animated:(BOOL)animated
+{
+    if (items != _leftBarButtonItems) {
+        [self willChangeValueForKey:@"leftBarButtonItems"];
+        [_leftBarButtonItems release];
+        _leftBarButtonItems = [items retain];
+        [self didChangeValueForKey:@"leftBarButtonItems"];
+    }
+}
+
+- (void)setLeftBarButtonItems:(NSArray *)leftBarButtonItems
+{
+    [self setLeftBarButtonItems:leftBarButtonItems animated:NO];
 }
 
 - (void)setHidesBackButton:(BOOL)hidesBackButton animated:(BOOL)animated

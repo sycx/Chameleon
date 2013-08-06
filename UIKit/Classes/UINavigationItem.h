@@ -36,8 +36,8 @@
     NSString *_title;
     NSString *_prompt;
     UIBarButtonItem *_backBarButtonItem;
-    UIBarButtonItem *_leftBarButtonItem;
-    UIBarButtonItem *_rightBarButtonItem;
+    NSArray *_leftBarButtonItems;
+    NSArray *_rightBarButtonItem;
     UIView *_titleView;
     BOOL _hidesBackButton;
     UINavigationBar *_navigationBar;
@@ -55,6 +55,9 @@
 @property (nonatomic, retain) UIBarButtonItem *rightBarButtonItem;
 @property (nonatomic, retain) NSArray *leftBarButtonItems;
 @property (nonatomic, retain) NSArray *rightBarButtonItems;
+- (void)setLeftBarButtonItems:(NSArray *)items animated:(BOOL)animated;
+- (void)setRightBarButtonItems:(NSArray *)items animated:(BOOL)animated;
+
 @property (nonatomic, retain) UIView *titleView;
 @property (nonatomic, assign) BOOL hidesBackButton;
 

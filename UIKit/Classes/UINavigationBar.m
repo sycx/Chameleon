@@ -43,6 +43,7 @@ static const UIEdgeInsets kButtonEdgeInsets = {0,0,0,0};
 static const CGFloat kMinButtonWidth = 30;
 static const CGFloat kMaxButtonWidth = 200;
 static const CGFloat kMaxButtonHeight = 24;
+static const CGFloat kDefaultButtonsGap = 8;
 
 static const NSTimeInterval kAnimationDuration = 0.33;
 
@@ -98,6 +99,37 @@ typedef enum {
         [self _setBarButtonSize:button];
         return button;
     }
+}
+
++ (UIView *)_viewWithBarButtonItems:(NSArray *)items
+{
+    if (!items || items.count == 0) {
+        return nil;
+    }
+    
+    NSMutableArray *subviews = [NSMutableArray array];
+    
+    CGFloat width = 0;
+    CGFloat xOffset = 0;
+    for (UIBarButtonItem *item in items) {
+        UIView *view = [self _viewWithBarButtonItem:item];
+        CGRect frame = view.frame;
+        frame.origin.x = xOffset;
+        view.frame = frame;
+        
+        xOffset += view.frame.size.width + kDefaultButtonsGap;
+        width += view.frame.size.width + kDefaultButtonsGap;
+        [subviews addObject:view];
+    }
+    
+    UIView *lastItemView = [subviews lastObject];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, lastItemView.frame.size.height)];
+    
+    for (UIView *subView in subviews) {
+        [view addSubview:subView];
+    }
+    
+    return view;
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -203,7 +235,7 @@ typedef enum {
         if (backItem) {
             _leftView = [isa _backButtonWithBarButtonItem:backItem.backBarButtonItem];
         } else {
-            _leftView = [isa _viewWithBarButtonItem:topItem.leftBarButtonItem];
+            _leftView = [isa _viewWithBarButtonItems:topItem.leftBarButtonItems];
         }
 
         if (_leftView) {
@@ -213,7 +245,7 @@ typedef enum {
             [self addSubview:_leftView];
         }
 
-        _rightView = [isa _viewWithBarButtonItem:topItem.rightBarButtonItem];
+        _rightView = [isa _viewWithBarButtonItems:topItem.rightBarButtonItems];
 
         if (_rightView) {
             _rightView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
