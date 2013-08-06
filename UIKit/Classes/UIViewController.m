@@ -69,6 +69,10 @@
     [_view _setViewController:nil];
     [_modalViewController release];
     [_navigationItem release];
+    for (UIViewController *vc in m_childViewControllers) {
+        [vc _setParentViewController:nil];
+    }
+    [m_childViewControllers release];
     [_title release];
     [_view release];
     [super dealloc];
