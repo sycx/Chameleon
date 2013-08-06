@@ -129,7 +129,7 @@ typedef enum {
         [view addSubview:subView];
     }
     
-    return view;
+    return [view autorelease];
 }
 
 - (id)initWithFrame:(CGRect)frame

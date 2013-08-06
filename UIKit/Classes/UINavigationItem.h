@@ -37,7 +37,7 @@
     NSString *_prompt;
     UIBarButtonItem *_backBarButtonItem;
     NSArray *_leftBarButtonItems;
-    NSArray *_rightBarButtonItem;
+    NSArray *_rightBarButtonItems;
     UIView *_titleView;
     BOOL _hidesBackButton;
     UINavigationBar *_navigationBar;
