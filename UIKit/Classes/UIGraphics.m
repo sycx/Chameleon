@@ -32,14 +32,41 @@
 #import "UIScreen.h"
 #import <AppKit/AppKit.h>
 
-static NSMutableArray *contextStack = nil;
-static NSMutableArray *imageContextStack = nil;
+#import <objc/runtime.h>
+
+@interface NSThread (NBContextSupport)
+- (NSMutableArray *)contextStack;
+- (NSMutableArray *)imageContextStack;
+@end
+
+static char contextStackKey;
+static char imageContextStackKey;
+
+@implementation NSThread (NBContextSupport)
+- (NSMutableArray *)contextStack
+{
+    NSMutableArray *stack = objc_getAssociatedObject(self, &contextStackKey);
+    if (!stack) {
+        stack = [NSMutableArray arrayWithCapacity:1];
+        objc_setAssociatedObject(self, &contextStackKey, stack, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return stack;
+}
+
+- (NSMutableArray *)imageContextStack
+{
+    NSMutableArray *stack = objc_getAssociatedObject(self, &imageContextStackKey);
+    if (!stack) {
+        stack = [NSMutableArray arrayWithCapacity:1];
+        objc_setAssociatedObject(self, &imageContextStackKey, stack, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return stack;
+}
+@end
 
 void UIGraphicsPushContext(CGContextRef ctx)
 {
-    if (!contextStack) {
-        contextStack = [[NSMutableArray alloc] initWithCapacity:1];
-    }
+    NSMutableArray *contextStack = [[NSThread currentThread] contextStack];
     
     if ([NSGraphicsContext currentContext]) {
         [contextStack addObject:[NSGraphicsContext currentContext]];
@@ -50,6 +77,7 @@ void UIGraphicsPushContext(CGContextRef ctx)
 
 void UIGraphicsPopContext()
 {
+    NSMutableArray *contextStack = [[NSThread currentThread] contextStack];
     if ([contextStack lastObject]) {
         [NSGraphicsContext setCurrentContext:[contextStack lastObject]];
         [contextStack removeLastObject];
@@ -71,6 +99,8 @@ CGFloat _UIGraphicsGetContextScaleFactor(CGContextRef ctx)
 
 void UIGraphicsBeginImageContextWithOptions(CGSize size, BOOL opaque, CGFloat scale)
 {
+    NSMutableArray *imageContextStack = [[NSThread currentThread] imageContextStack];
+
     if (scale == 0.f) {
         scale = [UIScreen mainScreen].scale;
     }
@@ -102,6 +132,8 @@ void UIGraphicsBeginImageContext(CGSize size)
 
 UIImage *UIGraphicsGetImageFromCurrentImageContext()
 {
+    NSMutableArray *imageContextStack = [[NSThread currentThread] imageContextStack];
+
     if ([imageContextStack lastObject]) {
         const CGFloat scale = [[imageContextStack lastObject] floatValue];
         CGImageRef theCGImage = CGBitmapContextCreateImage(UIGraphicsGetCurrentContext());
@@ -115,6 +147,8 @@ UIImage *UIGraphicsGetImageFromCurrentImageContext()
 
 void UIGraphicsEndImageContext()
 {
+    NSMutableArray *imageContextStack = [[NSThread currentThread] imageContextStack];
+
     if ([imageContextStack lastObject]) {
         [imageContextStack removeLastObject];
         UIGraphicsPopContext();
