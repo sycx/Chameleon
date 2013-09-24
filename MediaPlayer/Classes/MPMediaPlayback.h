@@ -16,4 +16,7 @@
 - (void)prepareToPlay;
 - (void)stop;
 
+// The current playback time of the now playing item in seconds.
+@property(nonatomic) NSTimeInterval currentPlaybackTime;
+
 @end

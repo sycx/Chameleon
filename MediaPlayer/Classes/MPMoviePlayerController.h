@@ -73,6 +73,14 @@ extern NSString *const MPMoviePlayerPlaybackDidFinishNotification;
 extern NSString *const MPMoviePlayerLoadStateDidChangeNotification;
 extern NSString *const MPMovieDurationAvailableNotification;
 
+// Posted when the movie player enters or exits fullscreen mode.
+extern NSString *const MPMoviePlayerWillEnterFullscreenNotification;
+extern NSString *const MPMoviePlayerDidEnterFullscreenNotification;
+extern NSString *const MPMoviePlayerWillExitFullscreenNotification;
+extern NSString *const MPMoviePlayerDidExitFullscreenNotification;
+extern NSString *const MPMoviePlayerFullscreenAnimationDurationUserInfoKey; // NSNumber of double (NSTimeInterval)
+extern NSString *const MPMoviePlayerFullscreenAnimationCurveUserInfoKey;     // NSNumber of NSUInteger (UIViewAnimationCurve)
+
 @class UIInternalMovieView;
 
 @interface MPMoviePlayerController : NSObject <MPMediaPlayback> 
@@ -101,6 +109,36 @@ extern NSString *const MPMovieDurationAvailableNotification;
 @property (nonatomic) MPMovieScalingMode scalingMode;
 
 
+// Determines if the movie is presented in the entire screen (obscuring all other application content). Default is NO.
+// Setting this property to YES before the movie player's view is visible will have no effect.
+@property(nonatomic, getter=isFullscreen) BOOL fullscreen;
+- (void)setFullscreen:(BOOL)fullscreen animated:(BOOL)animated;
+
 - (id)initWithContentURL: (NSURL*)url;
+
+
+@end
+
+// -----------------------------------------------------------------------------
+// Thumbnails
+
+enum {
+    MPMovieTimeOptionNearestKeyFrame,
+    MPMovieTimeOptionExact
+};
+typedef NSInteger MPMovieTimeOption;
+
+@interface MPMoviePlayerController (MPMoviePlayerThumbnailGeneration)
+
+// Returns a thumbnail at the given time.
+// Deprecated.  Use -requestThumbnailImagesAtTimes:timeOption: / MPMoviePlayerThumbnailImageRequestDidFinishNotification instead.
+- (UIImage *)thumbnailImageAtTime:(NSTimeInterval)playbackTime timeOption:(MPMovieTimeOption)option; // NS_DEPRECATED_IOS(3_2, 7_0);
+
+// Asynchronously request thumbnails for one or more times, provided as an array of NSNumbers (double).
+// Posts MPMoviePlayerThumbnailImageRequestDidFinishNotification on completion.
+- (void)requestThumbnailImagesAtTimes:(NSArray *)playbackTimes timeOption:(MPMovieTimeOption)option NS_AVAILABLE_IOS(3_2);
+
+// Cancels all pending asynchronous thumbnail requests.
+- (void)cancelAllThumbnailImageRequests NS_AVAILABLE_IOS(3_2);
 
 @end

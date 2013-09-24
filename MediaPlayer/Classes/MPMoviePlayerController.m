@@ -17,6 +17,13 @@ NSString *const MPMoviePlayerPlaybackDidFinishNotification = @"MPMoviePlayerPlay
 NSString *const MPMoviePlayerLoadStateDidChangeNotification = @"MPMoviePlayerLoadStateDidChangeNotification";
 NSString *const MPMovieDurationAvailableNotification = @"MPMovieDurationAvailableNotification";
 
+NSString *const MPMoviePlayerWillEnterFullscreenNotification = @"MPMoviePlayerWillEnterFullscreenNotification";
+NSString *const MPMoviePlayerDidEnterFullscreenNotification = @"MPMoviePlayerWillEnterFullscreenNotification";
+NSString *const MPMoviePlayerWillExitFullscreenNotification = @"MPMoviePlayerWillEnterFullscreenNotification";
+NSString *const MPMoviePlayerDidExitFullscreenNotification = @"MPMoviePlayerWillEnterFullscreenNotification";
+NSString *const MPMoviePlayerFullscreenAnimationDurationUserInfoKey = @"MPMoviePlayerWillEnterFullscreenNotification";
+NSString *const MPMoviePlayerFullscreenAnimationCurveUserInfoKey = @"MPMoviePlayerWillEnterFullscreenNotification";
+
 @implementation MPMoviePlayerController
 
 @synthesize view=_view;
@@ -210,6 +217,8 @@ NSString *const MPMovieDurationAvailableNotification = @"MPMovieDurationAvailabl
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [movie invalidate];
+    [movie release];
     [_view release];
     [super dealloc];
 }
@@ -258,6 +267,55 @@ NSString *const MPMovieDurationAvailableNotification = @"MPMovieDurationAvailabl
 - (UIView*) backgroundView {
     NSLog(@"[CHAMELEON] MPMoviePlayerController.backgroundView not implemented");
     return nil;
+}
+
+- (void)setFullscreen:(BOOL)fullscreen
+{
+    [self setFullscreen:fullscreen animated:NO];
+}
+
+- (void)setFullscreen:(BOOL)fullscreen animated:(BOOL)animated
+{
+    NSLog(@"[CHAMELEON] -[MPMoviePlayerController setFullscreen:animated:] not implemented");
+}
+
+- (void)setCurrentPlaybackTime:(NSTimeInterval)currentPlaybackTime
+{
+    QTTime time = QTMakeTimeWithTimeInterval(currentPlaybackTime);
+    [movie setCurrentTime:time];
+}
+
+- (NSTimeInterval)currentPlaybackTime
+{
+    QTTime currentTime = [movie currentTime];
+    NSTimeInterval playbackTime = 0;
+    QTGetTimeInterval(currentTime, &playbackTime);
+    return playbackTime;
+}
+@end
+
+@implementation MPMoviePlayerController (MPMoviePlayerThumbnailGeneration)
+
+- (UIImage *)thumbnailImageAtTime:(NSTimeInterval)playbackTime timeOption:(MPMovieTimeOption)option
+{
+    //option is ignored...
+    QTTime time = QTMakeTimeWithTimeInterval(playbackTime);
+    CGImageRef imageRef = [movie frameImageAtTime:time withAttributes:@{QTMovieFrameImageType:QTMovieFrameImageTypeCGImageRef} error:nil];
+    UIImage *image = [[UIImage alloc] initWithCGImage:imageRef];
+    return image;
+}
+
+// Asynchronously request thumbnails for one or more times, provided as an array of NSNumbers (double).
+// Posts MPMoviePlayerThumbnailImageRequestDidFinishNotification on completion.
+- (void)requestThumbnailImagesAtTimes:(NSArray *)playbackTimes timeOption:(MPMovieTimeOption)option
+{
+    NSLog(@"[CHAMELEON] -[MPMoviePlayerController requestThumbnailImagesAtTimes:timeOption:] not implemented");
+}
+
+// Cancels all pending asynchronous thumbnail requests.
+- (void)cancelAllThumbnailImageRequests
+{
+    NSLog(@"[CHAMELEON] -[MPMoviePlayerController cancelAllThumbnailImageRequests] not implemented");
 }
 
 
