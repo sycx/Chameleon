@@ -28,6 +28,11 @@
  */
 
 #import "UIPageControl.h"
+#import "UIImageView.h"
+
+@interface UIPageControl ()
+@property (nonatomic, strong) NSArray *dotViews;
+@end
 
 @implementation UIPageControl
 @synthesize currentPage=_currentPage, numberOfPages=_numberOfPages;
@@ -40,4 +45,38 @@
     }
 }
 
+- (void)setNumberOfPages:(NSInteger)numberOfPages
+{
+    if (numberOfPages != _numberOfPages) {
+        for (UIView *dot in self.dotViews) {
+            [dot removeFromSuperview];
+        }
+        
+        NSMutableArray *recreated = [NSMutableArray array];
+        for (NSInteger i = 0; i < numberOfPages; i++) {
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+            [self addSubview:imageView];
+            [recreated addObject:imageView];
+        }
+        
+        self.dotViews = recreated;
+        
+        _numberOfPages = numberOfPages;
+        [self setNeedsDisplay];
+    }
+}
+
+#define kDefaultDotWidth 30
+#define kDefaultDotGap 5
+
+- (void)layoutSubviews
+{
+    CGFloat y = CGRectGetMidY(self.bounds);
+    CGFloat dotsTotalWidth = kDefaultDotWidth * self.numberOfPages + (kDefaultDotGap * (self.numberOfPages - 1));
+    CGFloat xOffset = (CGRectGetWidth(self.bounds) - dotsTotalWidth) / 2.0;
+    for (UIImageView *view in self.dotViews) {
+        view.center = CGPointMake(xOffset, y);
+        xOffset += kDefaultDotGap + kDefaultDotWidth;
+    }
+}
 @end
