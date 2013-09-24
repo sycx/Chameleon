@@ -617,7 +617,9 @@ static BOOL _animationsEnabled = YES;
 
          */
 
-        if (hasAutoresizingFor(UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin)) {
+        if (oldSize.height == 0) {
+            frame.size.height = newSize.height;
+        } else if (hasAutoresizingFor(UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin)) {
             frame.origin.y = floorf(frame.origin.y + (frame.origin.y / oldSize.height * delta.height));
             frame.size.height = floorf(frame.size.height + (frame.size.height / oldSize.height * delta.height));
         } else if (hasAutoresizingFor(UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleHeight)) {
@@ -636,7 +638,9 @@ static BOOL _animationsEnabled = YES;
             frame.origin.y = floorf(frame.origin.y);
         }
 
-        if (hasAutoresizingFor(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin)) {
+        if (oldSize.width == 0) {
+            frame.size.width = newSize.width;
+        } else if (hasAutoresizingFor(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin)) {
             frame.origin.x = floorf(frame.origin.x + (frame.origin.x / oldSize.width * delta.width));
             frame.size.width = floorf(frame.size.width + (frame.size.width / oldSize.width * delta.width));
         } else if (hasAutoresizingFor(UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleWidth)) {
